@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyInstallerGenerator", "EasyInstallerGenerator\EasyInstallerGenerator.csproj", "{73645AC8-DE7D-41FE-B81D-F985B95F8945}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73645AC8-DE7D-41FE-B81D-F985B95F8945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73645AC8-DE7D-41FE-B81D-F985B95F8945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73645AC8-DE7D-41FE-B81D-F985B95F8945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73645AC8-DE7D-41FE-B81D-F985B95F8945}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8689FB51-4D49-4AB9-8BAE-A0404E6EF299}
+	EndGlobalSection
+EndGlobal
