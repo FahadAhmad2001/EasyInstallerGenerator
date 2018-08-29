@@ -53,13 +53,15 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label11 = new System.Windows.Forms.Label();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
+            this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
+            this.button10 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -284,6 +286,12 @@
             this.dataGridView1.TabIndex = 21;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
+            // Column1
+            // 
+            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column1.HeaderText = "Licenses";
+            this.Column1.Name = "Column1";
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -312,6 +320,7 @@
             this.button8.TabIndex = 24;
             this.button8.Text = "Generate Installer";
             this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button9
             // 
@@ -322,12 +331,6 @@
             this.button9.Text = "Generate NSIS Script";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // Column1
-            // 
-            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column1.HeaderText = "Licenses";
-            this.Column1.Name = "Column1";
             // 
             // textBox3
             // 
@@ -346,11 +349,27 @@
             this.label12.TabIndex = 26;
             this.label12.Text = "Install Folder:";
             // 
+            // saveFileDialog2
+            // 
+            this.saveFileDialog2.DefaultExt = "nsi";
+            this.saveFileDialog2.Filter = "\"NSIS Script File (*.nsi)|*.nsi\"";
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(621, 56);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(117, 29);
+            this.button10.TabIndex = 28;
+            this.button10.Text = "Download NSIS";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button10);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.button9);
@@ -423,6 +442,8 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+        private System.Windows.Forms.Button button10;
     }
 }
 

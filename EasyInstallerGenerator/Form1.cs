@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.IO.Compression;
+
 
 namespace EasyInstallerGenerator
 {
@@ -34,8 +37,28 @@ namespace EasyInstallerGenerator
             {
                 pictureBox1.Image = Image.FromFile(Application.StartupPath + "\\" + "logo.png");
             }
+            if(File.Exists(Application.StartupPath +"\\" + "makensis.exe"))
+            {
+                ZipFile.ExtractToDirectory(Application.StartupPath + "\\" + "nsis.zip", Application.StartupPath);
+            }
+            else
+            {
+                MessageBox.Show("NSIS needs to be downloaded. Click on Download NSIS button.");
+                
+            }
         }
-
+        public void NSISProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+        public void NSISDownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if(File.Exists(Application.StartupPath +"\\" + "nsis.zip"))
+            {
+                
+            }
+        }
+        
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //int SelectedIndex = checkedListBox1.SelectedIndex;
@@ -283,7 +306,134 @@ namespace EasyInstallerGenerator
                     }
                 }
             }
-            MessageBox.Show(NSISScript);
+            //MessageBox.Show(NSISScript);
+            if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter ScriptExport;
+                ScriptExport = new StreamWriter(saveFileDialog2.FileName);
+                ScriptExport.Write(NSISScript);
+                ScriptExport.Close();
+                MessageBox.Show("Successfilly output to NSIS Script File");
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            System.Net.NetworkInformation.Ping DownloadServer = new System.Net.NetworkInformation.Ping();
+            if (DownloadServer.Send("89.203.4.93", 300).Status == System.Net.NetworkInformation.IPStatus.Success)
+            {
+                System.Net.WebClient DownloadNSIS = new System.Net.WebClient();
+                Uri DownloadAddress = new Uri("ftp://89.203.4.93:2048/downloads/installgen/nsis.zip");
+                DownloadNSIS.DownloadProgressChanged += new DownloadProgressChangedEventHandler(NSISProgressChanged);
+                DownloadNSIS.DownloadFileCompleted += new AsyncCompletedEventHandler(NSISDownloadCompleted);
+                DownloadNSIS.DownloadFileAsync(DownloadAddress, "nsis.zip");
+
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            NSISScript = "!include \"MUI.nsh\"\n" + "!define MUI_ABORTWARNING\n";
+            String[] output1;
+            output1 = Regex.Split(Licenses, "SPLITT");
+            foreach (String licenses in output1)
+            {
+                if (String.IsNullOrEmpty(licenses))
+                {
+
+                }
+                else
+                {
+                    NSISScript = NSISScript + "!insertmacro MUI_PAGE_LICENSE \"" + licenses + "\"\n";
+                }
+            }
+            NSISScript = NSISScript + "!insertmacro MUI_PAGE_COMPONENTS\n!define MUI_TEXT_LICENSE_TITLE \"License Agreement\"\n!insertmacro MUI_LANGUAGE \"English\"\n";
+            NSISScript = NSISScript + "Name \"" + textBox1.Text + "\"\nCaption \"" + textBox2.Text + "\"\nIcon \"" + IconPath + "\"\nOutFile \"" + OutputPath + "\"\n";
+            NSISScript = NSISScript + "SetDateSave on\nSetDatablockOptimize on\nCRCCheck on\nSilentInstall normal\n";
+            NSISScript = NSISScript + "InstallDir \"$PROGRAMFILES\\" + textBox3.Text + "\"\n" + "RequestExecutionLevel " + UseAdmin + "\nManifestSupportedOS all\n";
+            NSISScript = NSISScript + "Page directory\nPage instfiles\nUninstPage uninstConfirm\nUninstPage instfiles\nAutoCloseWindow false\nShowInstDetails show\n";
+            NSISScript = NSISScript + "Section \"\"\nSetOutPath $INSTDIR\nFile /nonfatal /a /r \"" + folderPath + "\\\"\n" + "SectionEnd\n";
+            if (checkedListBox1.GetItemCheckState(1) == CheckState.Checked)
+            {
+                NSISScript = NSISScript + "Section \"Install Source Code\"\nSetOutPath \"$INSTDIR\\Source\"\n" + "File /nonfatal /a /r \"" + SourcePath + "\\\"\nSectionEnd\n";
+            }
+            if (checkedListBox1.GetItemCheckState(3) == CheckState.Checked)
+            {
+                if (EXEPath.Contains(folderPath))
+                {
+                    String[] output2;
+                    String[] output22;
+                    String[] output23;
+                    String[] output24;
+                    String temp1;
+                    String temp2;
+                    String temp3;
+                    temp1 = "";
+                    temp2 = "";
+                    temp3 = "";
+                    Char Splitter = '\\';
+                    output22 = folderPath.Split(Splitter);
+                    for (int count = 0; count < output22.Length + 1; count++)
+                    {
+                        if (count == output22.Length)
+                        {
+                            temp1 = output22[count - 1];
+                        }
+                    }
+                    //        output23 = folderPath.Split(Splitter);
+                    //      foreach(String tempstring in output23)
+                    //    {
+                    //      temp2 = temp2 + "\\\\" + tempstring;
+                    //   }
+                    output23 = Regex.Split(EXEPath, temp1);
+                    for (int count = 0; count < output23.Length + 1; count++)
+                    {
+                        if (count == output23.Length)
+                        {
+                            temp2 = output23[count - 1];
+                        }
+                    }
+                    output24 = Regex.Split(ShortcutIconPath, temp1);
+                    for (int count = 0; count < output24.Length + 1; count++)
+                    {
+                        if (count == output24.Length)
+                        {
+                            temp3 = output24[count - 1];
+                        }
+                    }
+                    //       temp1.TrimStart(Splitter);
+                    //     temp2.TrimStart(Splitter);
+                    //               output2 = Regex.Split(temp1, temp2);
+                    //             output24 = ShortcutIconPath.Split(Splitter);
+                    //           foreach(String tempstring in output24)
+                    //         {
+                    //           temp3 = temp3 + "\\\\" + tempstring;
+                    //     }
+                    //   temp3.TrimStart(Splitter);
+
+                    if (ShortcutIconPath.Contains(folderPath))
+                    {
+                        //    String[] output3;
+                        //  output3 = Regex.Split(temp3, temp2);
+                        NSISScript = NSISScript + "Section \"Create Shortcut on Desktop\"\nCreateShortCut \"$DESKTOP\\" + textBox1.Text + ".lnk\" \"$INSTDIR\\" + temp2 + "\" \"\" \"$INSTDIR\\" + temp3 + "\" 0 SW_SHOWNORMAL ALT|CONTROL|SHIFT|F4 \"" + textBox1.Text + "\"\nSectionEnd";
+
+                    }
+                }
+            }
+            StreamWriter WriteToNSI;
+            WriteToNSI = new StreamWriter(Application.StartupPath + "\\" + "temp.nsi");
+            WriteToNSI.Write(NSISScript);
+            WriteToNSI.Close();
+            System.Diagnostics.Process CompileNSI = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo CompileNSIInfo = new System.Diagnostics.ProcessStartInfo(Application.StartupPath +"\\" +"makensis.exe");
+            CompileNSIInfo.Arguments = "temp.nsi";
+            CompileNSIInfo.CreateNoWindow = true;
+            CompileNSIInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            CompileNSI.StartInfo = CompileNSIInfo;
+            CompileNSI.Start();
+            CompileNSI.WaitForExit();
+            CompileNSI.Close();
+            MessageBox.Show("Completed");
         }
     }
 }
