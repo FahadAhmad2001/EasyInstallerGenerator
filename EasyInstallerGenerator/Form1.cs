@@ -26,6 +26,7 @@ namespace EasyInstallerGenerator
         public String ShortcutIconPath;
         public String UseAdmin;
         public String NSISScript;
+        public String MainInstallDir;
         public Form1()
         {
             InitializeComponent();
@@ -46,16 +47,34 @@ namespace EasyInstallerGenerator
                 MessageBox.Show("NSIS needs to be downloaded. Click on Download NSIS button.");
                 
             }
+            UseAdmin = "admin";
+            checkedListBox1.SetItemCheckState(0, CheckState.Checked);
+            checkedListBox1.SetItemCheckState(1, CheckState.Checked);
+            checkedListBox1.SetItemCheckState(2, CheckState.Checked);
+            checkedListBox1.SetItemCheckState(3, CheckState.Checked);
+
         }
         public void NSISProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
+           // MessageBox.Show("Currently, " + e.ProgressPercentage);
             progressBar1.Value = e.ProgressPercentage;
+
         }
         public void NSISDownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if(File.Exists(Application.StartupPath +"\\" + "nsis.zip"))
             {
                 ZipFile.ExtractToDirectory(Application.StartupPath + "\\" + "nsis.zip", Application.StartupPath);
+                if(File.Exists(Application.StartupPath + "\\" + "makensis.exe"))
+                {
+                    MessageBox.Show("Successfully Downloaded");
+                    progressBar1.Value = 0;
+                }
+                else
+                {
+                    MessageBox.Show("Error in downloading, please download the file http://lightspeedmedia.ddns.net:500/installgen/nsis.zip and extract it to your install dir (of this program)");
+                    progressBar1.Value = 0;
+                }
             }
         }
         
@@ -126,10 +145,12 @@ namespace EasyInstallerGenerator
                 if (checkedListBox1.GetItemCheckState(2) == CheckState.Checked)
                 {
                     UseAdmin = "user";
+                    MainInstallDir = "$DOCUMENTS\\";
                 }
                 else
                 {
                     UseAdmin = "admin";
+                    MainInstallDir = "$PROGRAMFILES\\";
                 }
             }
         }
@@ -236,7 +257,7 @@ namespace EasyInstallerGenerator
             NSISScript = NSISScript + "!insertmacro MUI_PAGE_COMPONENTS\n!define MUI_TEXT_LICENSE_TITLE \"License Agreement\"\n!insertmacro MUI_LANGUAGE \"English\"\n";
             NSISScript = NSISScript + "Name \"" + textBox1.Text + "\"\nCaption \"" + textBox2.Text + "\"\nIcon \"" + IconPath + "\"\nOutFile \"" + OutputPath + "\"\n";
             NSISScript = NSISScript + "SetDateSave on\nSetDatablockOptimize on\nCRCCheck on\nSilentInstall normal\n";
-            NSISScript = NSISScript + "InstallDir \"$PROGRAMFILES\\" + textBox3.Text + "\"\n" + "RequestExecutionLevel " + UseAdmin + "\nManifestSupportedOS all\n";
+            NSISScript = NSISScript + "InstallDir \"" +MainInstallDir+ textBox3.Text + "\"\n" + "RequestExecutionLevel " + UseAdmin + "\nManifestSupportedOS all\n";
             NSISScript = NSISScript + "Page directory\nPage instfiles\nUninstPage uninstConfirm\nUninstPage instfiles\nAutoCloseWindow false\nShowInstDetails show\n";
             NSISScript = NSISScript + "Section \"\"\nSetOutPath $INSTDIR\nFile /nonfatal /a /r \"" + folderPath + "\\\"\n" + "SectionEnd\n";
             if (checkedListBox1.GetItemCheckState(1) == CheckState.Checked)
@@ -317,13 +338,13 @@ namespace EasyInstallerGenerator
             }
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        public void button10_Click(object sender, EventArgs e)
         {
             System.Net.NetworkInformation.Ping DownloadServer = new System.Net.NetworkInformation.Ping();
             if (DownloadServer.Send("89.203.4.93", 300).Status == System.Net.NetworkInformation.IPStatus.Success)
             {
                 System.Net.WebClient DownloadNSIS = new System.Net.WebClient();
-                Uri DownloadAddress = new Uri("ftp://89.203.4.93:2048/downloads/installgen/nsis.zip");
+                Uri DownloadAddress = new Uri("http://89.203.4.93:500/installgen/nsis.zip");
                 DownloadNSIS.DownloadProgressChanged += new DownloadProgressChangedEventHandler(NSISProgressChanged);
                 DownloadNSIS.DownloadFileCompleted += new AsyncCompletedEventHandler(NSISDownloadCompleted);
                 DownloadNSIS.DownloadFileAsync(DownloadAddress, "nsis.zip");
@@ -350,7 +371,7 @@ namespace EasyInstallerGenerator
             NSISScript = NSISScript + "!insertmacro MUI_PAGE_COMPONENTS\n!define MUI_TEXT_LICENSE_TITLE \"License Agreement\"\n!insertmacro MUI_LANGUAGE \"English\"\n";
             NSISScript = NSISScript + "Name \"" + textBox1.Text + "\"\nCaption \"" + textBox2.Text + "\"\nIcon \"" + IconPath + "\"\nOutFile \"" + OutputPath + "\"\n";
             NSISScript = NSISScript + "SetDateSave on\nSetDatablockOptimize on\nCRCCheck on\nSilentInstall normal\n";
-            NSISScript = NSISScript + "InstallDir \"$PROGRAMFILES\\" + textBox3.Text + "\"\n" + "RequestExecutionLevel " + UseAdmin + "\nManifestSupportedOS all\n";
+            NSISScript = NSISScript + "InstallDir \"" + MainInstallDir + textBox3.Text + "\"\n" + "RequestExecutionLevel " + UseAdmin + "\nManifestSupportedOS all\n";
             NSISScript = NSISScript + "Page directory\nPage instfiles\nUninstPage uninstConfirm\nUninstPage instfiles\nAutoCloseWindow false\nShowInstDetails show\n";
             NSISScript = NSISScript + "Section \"\"\nSetOutPath $INSTDIR\nFile /nonfatal /a /r \"" + folderPath + "\\\"\n" + "SectionEnd\n";
             if (checkedListBox1.GetItemCheckState(1) == CheckState.Checked)
