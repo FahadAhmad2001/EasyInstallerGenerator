@@ -52,6 +52,7 @@ namespace EasyInstallerGenerator
             checkedListBox1.SetItemCheckState(1, CheckState.Checked);
             checkedListBox1.SetItemCheckState(2, CheckState.Checked);
             checkedListBox1.SetItemCheckState(3, CheckState.Checked);
+            MainInstallDir = "$PROGRAMFILES\\";
 
         }
         public void NSISProgressChanged(object sender, DownloadProgressChangedEventArgs e)
