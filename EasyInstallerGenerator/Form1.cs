@@ -39,7 +39,7 @@ namespace EasyInstallerGenerator
             }
             if(File.Exists(Application.StartupPath +"\\" + "makensis.exe"))
             {
-                ZipFile.ExtractToDirectory(Application.StartupPath + "\\" + "nsis.zip", Application.StartupPath);
+                
             }
             else
             {
@@ -55,7 +55,7 @@ namespace EasyInstallerGenerator
         {
             if(File.Exists(Application.StartupPath +"\\" + "nsis.zip"))
             {
-                
+                ZipFile.ExtractToDirectory(Application.StartupPath + "\\" + "nsis.zip", Application.StartupPath);
             }
         }
         
